@@ -7,6 +7,7 @@
 
 // References:
 // https://github.com/kittykatattack/learningPixi
+// Pixi documentation https://pixijs.download/dev/docs/PIXI.Ticker.html#maxFPS
 // 
 // Requirements: 
 // - Pixi.js
@@ -197,8 +198,8 @@ class BaseAgent{
     }
 
     move(dx,dy){
-        self.x += dx
-        self.y += dy
+        this.x += dx
+        this.y += dy
     }
 
     render(){

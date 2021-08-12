@@ -42,15 +42,24 @@ var RandomId = function () {
 // ----------------------------------------------------------------------------------
 
 
-const makeRectangle = (top,left,width,height,color,container) => {
-
+const makeRectangleGraphics = (top,left,width,height,color) => {
     const shape = new PIXI.Graphics();
     shape.beginFill(color);
     shape.drawRect(top,left,height,width);
     shape.endFill();
-    container.addChild(shape);
+    return shape;
     
 } 
+
+const makeRectangleSprite = (top,left,width,height,color) => {
+    const shape = new PIXI.Sprite(PIXI.Texture.WHITE);
+    shape.position.set(top,left);
+    shape.width = width;
+    shape.height = height;
+    shape.tint = color;
+    return shape
+}
+
 
 
 const makeLine = (x1,y1,x2,y2,container,color = 0x888888,width = 1,alpha = 1) => {
@@ -145,13 +154,20 @@ class GridEnvironment  {
         }
 
     }
-
-
-    render(){
+    step(){
         this.objects.forEach(obj => {
-            obj.render()
+
+            if (!obj.isStationary){
+                obj.step()
+            }
         })
     }
+
+    // render(){
+    //     this.objects.forEach(obj => {
+    //         obj.render()
+    //     })
+    // }
 }
 
 
@@ -174,6 +190,12 @@ class BaseAgent{
 
     bind(env){
         this._env = env
+        this.shape = makeRectangleSprite(this.top,this.left,this.cellSize,this.cellSize,this.color)
+        this.env.container.addChild(this.shape)
+    }
+
+    get isStationary(){
+        return false
     }
 
 
@@ -198,17 +220,29 @@ class BaseAgent{
     }
 
     move(dx,dy){
+
+        // Update internal position in the grid
         this.x += dx
         this.y += dy
+
+        // Update sprite position for auto rendering
+        this.shape.x = this.top
+        this.shape.y = this.left
+
     }
 
-    render(){
-        this.renderRect()
+    step(){
+        console.log("Step function for agent ",this.id)
     }
 
-    renderRect(){
-        makeRectangle(this.top,this.left,this.cellSize,this.cellSize,this.color,this._env.container)
-    }
+    // Probably not need anymore render functions
+    // render(){
+    //     // this.renderRect()
+    // }
+
+    // renderRect(){
+    //     makeRectangle(this.top,this.left,this.cellSize,this.cellSize,this.color,this._env.container)
+    // }
 
 }
 
@@ -216,3 +250,53 @@ class BaseAgent{
 // ----------------------------------------------------------------------------------
 // OBJECTS
 // ----------------------------------------------------------------------------------
+
+
+
+// ----------------------------------------------------------------------------------
+// SIMULATION
+// ----------------------------------------------------------------------------------
+
+
+class Simulation{
+    constructor(env,fps = 10){
+        this.env = env
+
+        // Set up FPS (Frame Per Seconds for simulation)
+        // Maybe more useful in run fonction
+        this.fps = fps
+        env.app.ticker.minFPS = this.fps
+        env.app.ticker.maxFPS = this.fps
+
+    }
+
+
+    step(){
+        this.env.step();
+    }
+
+
+    run(n = null){
+
+        let i = 0;
+        
+        this.env.app.ticker.add(delta => {
+
+            if (n !== null){
+                if (i == n){
+                    this.env.app.ticker.stop();
+                }
+            }
+
+            i++
+            return this.step()
+        });
+
+
+    }
+
+
+
+
+
+}

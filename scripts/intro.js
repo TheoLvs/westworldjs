@@ -6,23 +6,24 @@ let env = new GridEnvironment({
     width:40,
     height:20,
     cellSize:20,
+    toroidal:true,
 });
 
 class Agent extends BaseAgent{
     step(){
-        this.move(1,0)
+        this.randomWalk()
     }
 }
 
 let agent = new Agent(0,0);
-let agent2 = new Agent(10,2);
+// let agent2 = new Agent(10,2);
 
-env.add([agent,agent2])
+env.add([agent])
 
 
 let sim = new Simulation(env,10);
 
-sim.run();
+sim.run(50);
 
 // let FPS = 10
 // env.app.ticker.minFPS = FPS

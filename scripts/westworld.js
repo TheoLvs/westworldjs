@@ -28,13 +28,33 @@ const YELLOW = 0xffff00
 const BLACK = 0x000000
 
 
-var RandomId = function () {
+const MOVES = [
+    [1,0],
+    [-1,0],
+    [0,1],
+    [0,-1],
+]
+
+let MOVESDIAGONAL = MOVES + [
+    [1,1],
+    [1,-1],
+    [-1,1],
+    [-1,-1]
+]
+
+
+var randomId = () => {
     // Drawn from https://gist.github.com/gordonbrander/2230317
     // Math.random should be unique because of its seeding algorithm.
     // Convert it to base 36 (numbers + letters), and grab the first 9 characters
     // after the decimal.
     return '_' + Math.random().toString(36).substr(2, 9);
   };
+
+  var randomChoice = (choices) => {
+    var index = Math.floor(Math.random() * choices.length);
+    return choices[index];
+  }
 
 
 // ----------------------------------------------------------------------------------
@@ -94,12 +114,13 @@ const makeGrid = (width,height,cellSize,container,color = 0x888888) => {
 
 
 class GridEnvironment  {
-    constructor({width = 40,height = 30,cellSize = 20,objects=null,backgroundColor=0x061639,showGrid=true,gridColor=0x888888,...params}){
+    constructor({width = 40,height = 30,cellSize = 20,objects=null,backgroundColor=0x061639,showGrid=true,gridColor=0x888888,toroidal=true,...params}){
 
         // Important attributes
         this.width = width
         this.height = height
         this.cellSize = cellSize
+        this.toroidal = toroidal
         this._objects = {}
 
         // Maybe better to use a container instead of directly the application
@@ -163,6 +184,32 @@ class GridEnvironment  {
         })
     }
 
+    _toroidalWrap(x,y){
+
+        let newx = x
+        let newy = y
+
+
+        if (this.toroidal){
+            // Check with x
+            if (x >= this.width){
+                newx = 0;
+            } else if (x < 0){
+                newx = this.width - 1
+            }
+
+            // Check with y
+            if (y >= this.height){
+                newy = 0;
+            } else if (y < 0){
+                newy = this.height - 1
+            }
+
+        }
+
+        return [newx,newy]
+    }
+
     // render(){
     //     this.objects.forEach(obj => {
     //         obj.render()
@@ -180,7 +227,7 @@ class BaseAgent{
     constructor(x,y,color = RED){
 
         // Id creation
-        this.id = RandomId();
+        this.id = randomId();
 
         // Other attributes
         this.x = x
@@ -219,21 +266,70 @@ class BaseAgent{
         return this.y * this.cellSize
     }
 
-    move(dx,dy){
+    step(){
+        // console.log("Step function for agent ",this.id)
+    }
 
+
+    setPosition(x,y){
         // Update internal position in the grid
-        this.x += dx
-        this.y += dy
+        this.x = x
+        this.y = y
 
         // Update sprite position for auto rendering
         this.shape.x = this.top
         this.shape.y = this.left
-
     }
 
-    step(){
-        console.log("Step function for agent ",this.id)
+    move(dx,dy){
+        // TODO add movements with speed and angle
+        // See Python version for implementation
+
+        // Store old position
+        let [oldx,oldy] = [this.x,this.y]
+
+        // New movements
+        // TODO round x,y
+        let x = this.x + dx
+        let y = this.y + dy
+
+        // Correct movements going offscreen
+        // TODO use only in toroidal envs ? 
+        let newPos = this.env._toroidalWrap(x,y);
+        [x,y] = newPos
+
+        // Update positions
+        this.setPosition(x,y)
+
+        // Compute collisions
+        // See Python version for implementation
     }
+
+    randomWalk(){
+        let [dx,dy] = randomChoice(MOVES);
+        this.move(dx,dy)
+    }
+
+    followDirection(){
+    }
+
+    wander(){
+    }
+
+    moveAt(){
+    }
+
+    followMouse(){
+    }
+
+    moveTowards(){
+    }
+
+    fleeFrom(){
+    }
+
+
+
 
     // Probably not need anymore render functions
     // render(){

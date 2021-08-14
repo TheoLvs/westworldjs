@@ -56,6 +56,11 @@ var randomId = () => {
     return choices[index];
   }
 
+  var randomInt = (min,max) => {
+    // Random Integer between min and max - 1
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+
 
 // ----------------------------------------------------------------------------------
 // Shapes and simple graphics
@@ -182,6 +187,23 @@ class GridEnvironment  {
                 obj.step()
             }
         })
+    }
+
+    getRandomAvailablePosition(allowOverlap=false){
+        // TODO - add overlap
+        let x = randomInt(0,this.width);
+        let y = randomInt(0,this.height);
+        return [x,y]
+    }
+
+    spawn(spawner,n,allowOverlap=false,...rest){
+
+        for (let i=0; i<n ; i++){
+            let [x,y] = this.getRandomAvailablePosition(allowOverlap);
+            let obj = spawner(x,y,...rest);
+            this.add(obj);
+        }
+
     }
 
     _toroidalWrap(x,y){

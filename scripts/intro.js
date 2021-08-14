@@ -3,10 +3,11 @@
 
 
 let env = new GridEnvironment({
-    width:40,
-    height:20,
-    cellSize:20,
+    width:100,
+    height:40,
+    cellSize:10,
     toroidal:true,
+    showGrid:false,
 });
 
 class Agent extends BaseAgent{
@@ -15,15 +16,22 @@ class Agent extends BaseAgent{
     }
 }
 
-let agent = new Agent(0,0);
-// let agent2 = new Agent(10,2);
 
-env.add([agent])
+let spawner = (x,y) => {
+    return new Agent(x,y);
+}
+
+env.spawn(spawner,10)
+
+
+// let agent = new Agent(0,0);
+// let agent2 = new Agent(10,2);
+// env.add([agent])
 
 
 let sim = new Simulation(env,10);
 
-sim.run(50);
+sim.run();
 
 // let FPS = 10
 // env.app.ticker.minFPS = FPS

@@ -189,6 +189,21 @@ class GridEnvironment  {
         })
     }
 
+
+    getMousePosition(){
+        const mouseCoords = this.app.renderer.plugins.interaction.mouse.global;
+        let x = Math.max(Math.min(mouseCoords["x"],(this.width - 1) * this.cellSize),0);
+        let y = Math.max(Math.min(mouseCoords["y"],(this.height - 1) * this.cellSize),0);
+
+        // Round to cell coordinates
+        // Use bitwise operator for fast integer quotient division
+        x = (x / this.cellSize) >> 0
+        y = (y / this.cellSize) >> 0
+
+        return [x,y];
+    }
+
+
     getRandomAvailablePosition(allowOverlap=false){
         // TODO - add overlap
         let x = randomInt(0,this.width);
@@ -344,7 +359,9 @@ class BaseAgent{
         this.move(dx,dy);
     }
 
-    followMouse(){
+    followMouse(naive=true){
+        let [x,y] = this.env.getMousePosition();
+        this.moveTowards(x,y,naive);
     }
 
     moveTowards(x,y,naive=true){

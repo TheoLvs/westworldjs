@@ -7,12 +7,13 @@ let env = new GridEnvironment({
     height:40,
     cellSize:10,
     toroidal:true,
-    showGrid:false,
+    showGrid:true,
 });
 
 class Agent extends BaseAgent{
     step(){
-        this.moveTowards(0,0)
+        this.followMouse();
+        // this.moveTowards(0,0)
         // this.randomWalk()
     }
 }
@@ -22,7 +23,7 @@ let spawner = (x,y) => {
     return new Agent(x,y);
 }
 
-env.spawn(spawner,10)
+env.spawn(spawner,1000)
 
 
 // let agent = new Agent(0,0);
@@ -30,7 +31,7 @@ env.spawn(spawner,10)
 // env.add([agent])
 
 
-let sim = new Simulation(env,10);
+let sim = new Simulation(env,30);
 
 sim.run();
 

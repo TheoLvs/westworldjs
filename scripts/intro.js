@@ -12,7 +12,8 @@ let env = new GridEnvironment({
 
 class Agent extends BaseAgent{
     step(){
-        this.randomWalk()
+        this.moveTowards(0,0)
+        // this.randomWalk()
     }
 }
 

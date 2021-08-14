@@ -338,13 +338,37 @@ class BaseAgent{
     wander(){
     }
 
-    moveAt(){
+    moveAt(x,y){
+        let dx = x - this.x
+        let dy = y - this.y
+        this.move(dx,dy);
     }
 
     followMouse(){
     }
 
-    moveTowards(){
+    moveTowards(x,y,naive=true){
+
+        // TODO add in naive pathfinding
+        if (naive){
+            let moves = [];
+            if (this.x > x){
+                moves.push([-1,0])
+            } else if (this.x < x){
+                moves.push([1,0])
+            }
+            if (this.y > y){
+                moves.push([0,-1])
+            } else if (this.y < y){
+                moves.push([0,1])
+            }
+
+            if (moves.length > 0){
+                let [dx,dy] = randomChoice(moves);
+                this.move(dx,dy)
+            }
+
+        }
     }
 
     fleeFrom(){

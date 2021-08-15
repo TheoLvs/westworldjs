@@ -7,54 +7,57 @@ let env = new GridEnvironment({
     height:40,
     cellSize:10,
     toroidal:true,
-    showGrid:true,
+    showGrid:false,
 });
+
+
 
 class Agent extends BaseAgent{
     step(){
-        this.followMouse();
-        // this.moveTowards(0,0)
+
         // this.randomWalk()
+        this.followMouse();
+
+        let [isCollision,collisions] = this.collidesRect(this.env.objects)
+
+        if (!isCollision){
+            this.setColor(GREEN);
+        } else {
+            this.setColor(BLUE)
+        }
+
+        // this.moveTowards(0,0)
     }
 }
+
+
+let agent = new BaseAgent(10,10);
+env.add([agent])
 
 
 let spawner = (x,y) => {
     return new Agent(x,y);
 }
 
-env.spawn(spawner,1000)
+env.spawn(spawner,100)
 
 
-// let agent = new Agent(0,0);
 // let agent2 = new Agent(10,2);
-// env.add([agent])
 
 
 let sim = new Simulation(env,30);
 
 sim.run();
 
-// let FPS = 10
-// env.app.ticker.minFPS = FPS
-// env.app.ticker.maxFPS = FPS
-
-// let i = 0;
-
-// function gameLoop(delta){
 
 
 
-//     agent.move(1,0)
-//     agent2.move(0,1)
 
 
-//     console.log(i,delta)
-//     i++
 
-//     // Move the cat 1 pixel 
-//     // cat.x += 1;
-// }
+
+
+
 
 
 // // env.app.ticker.add(delta => {

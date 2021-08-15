@@ -51,15 +51,22 @@ var randomId = () => {
     return '_' + Math.random().toString(36).substr(2, 9);
   };
 
-  var randomChoice = (choices) => {
+var randomChoice = (choices) => {
     var index = Math.floor(Math.random() * choices.length);
     return choices[index];
-  }
+}
 
-  var randomInt = (min,max) => {
+var randomInt = (min,max) => {
     // Random Integer between min and max - 1
     return Math.floor(Math.random() * (max - min) + min);
-  }
+}
+
+
+function intersectsBoxBox(x1, y1, w1, h1, x2, y2, w2, h2)
+// From https://github.com/davidfig/intersects/blob/master/box-box.js
+{
+    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+}
 
 
 // ----------------------------------------------------------------------------------
@@ -276,6 +283,37 @@ class BaseAgent{
         this._env = env
         this.shape = makeRectangleSprite(this.top,this.left,this.cellSize,this.cellSize,this.color)
         this.env.container.addChild(this.shape)
+    }
+
+    setColor(color){
+        this.shape.tint = color;
+    }
+
+    collidesRectRect(other){
+        // Inspired by Intersects
+        // https://github.com/davidfig/intersects/blob/master/box-box.js
+
+        let b1 = this.shape.getBounds();
+        let b2 = other.shape.getBounds();
+
+        let [x1,y1,w1,h1] = [b1["x"],b1["y"],b1["width"],b1["height"]]
+        let [x2,y2,w2,h2] = [b2["x"],b2["y"],b2["width"],b2["height"]]
+
+        return intersectsBoxBox(x1,y1,w1,h1,x2,y2,w2,h2);
+
+    }
+
+    collidesRect(others){
+        let collisions = [];
+        others.forEach(other => {
+            if (this.id !== other.id){
+                if (this.collidesRectRect(other)){
+                    collisions.push(other.id)
+                }
+            }
+        })
+        let isCollision = collisions.length > 0;
+        return [isCollision,collisions]
     }
 
     get isStationary(){

@@ -55,6 +55,32 @@ export class GridEnvironment  {
         return Object.values(this._objects)
     }
 
+    getOccupiedPositions(){
+        let positions = [];
+        this.objects.forEach(el => {
+            if (el.isBlocking){
+                positions.push(el.pos)
+            }
+        })
+        return positions;
+    }
+
+
+    _makeZeroMatrix(i,j){
+        // https://stackoverflow.com/questions/8301400/how-do-you-easily-create-empty-matrices-javascript
+        return Array(i).fill().map(() => Array(j).fill(0));
+    }
+
+    getNavigationMesh(){
+        let mesh = this._makeZeroMatrix(this.width,this.height);
+        let positions = this.getOccupiedPositions();
+        positions.forEach(pos => {
+            let [x,y] = pos;
+            mesh[x][y] = 1
+        })
+        return mesh;
+    }
+
 
     add(obj){
         if (obj !== null){

@@ -17,53 +17,59 @@ export * from "./utils";
 export * from "./simulation";
 export * from "./agents/baseAgent";
 export * from "./environment/grid";
+export * from "./objects/obstacle";
+
+import PF from "pathfinding";
+
+export function getPathfinding(){
+    return PF;
+}
+
+// import {GridEnvironment} from "./environment/grid";
+// import {BaseAgent} from "./agents/baseAgent";
+// import {Simulation} from "./simulation";
+// import * as utils from "./utils";
+
+// let env = new GridEnvironment({
+//     width:80,
+//     height:40,
+//     cellSize:10,
+//     toroidal:true,
+//     showGrid:false,
+// });
 
 
-import {GridEnvironment} from "./environment/grid";
-import {BaseAgent} from "./agents/baseAgent";
-import {Simulation} from "./simulation";
-import * as utils from "./utils";
+// class Agent extends BaseAgent{
+//     step(){
 
-let env = new GridEnvironment({
-    width:80,
-    height:40,
-    cellSize:10,
-    toroidal:true,
-    showGrid:false,
-});
+//         // this.randomWalk()
+//         this.followMouse();
 
-
-class Agent extends BaseAgent{
-    step(){
-
-        // this.randomWalk()
-        this.followMouse();
-
-        let [isCollision,collisions] = this.collidesRect(this.env.objects)
-        this.setColor(isCollision ? utils.BLUE : utils.GREEN);
+//         let [isCollision,collisions] = this.collidesRect(this.env.objects)
+//         this.setColor(isCollision ? utils.BLUE : utils.GREEN);
         
-        // this.moveTowards(0,0)
-    }
-}
+//         // this.moveTowards(0,0)
+//     }
+// }
 
 
-let agent = new BaseAgent(10,10);
-env.add([agent])
+// let agent = new BaseAgent(10,10);
+// env.add([agent])
 
 
-let spawner = (x,y) => {
-    return new Agent(x,y);
-}
+// let spawner = (x,y) => {
+//     return new Agent(x,y);
+// }
 
-env.spawn(spawner,100)
-
-
-let agent2 = new Agent(10,2);
+// env.spawn(spawner,100)
 
 
-let sim = new Simulation(env,30);
+// let agent2 = new Agent(10,2);
 
-sim.run();
+
+// let sim = new Simulation(env,30);
+
+// sim.run();
 
 
 

@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/TheoLvs/westworldjs#readme",
   "dependencies": {
+    "pathfinding": "^0.4.18",
     "pixi.js": "^6.1.2"
   },
   "devDependencies": {

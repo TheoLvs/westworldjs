@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import * as utils from "../utils";
+import PF from "pathfinding";
 
 // ----------------------------------------------------------------------------------
 // ENVIRONMENT
@@ -71,14 +72,40 @@ export class GridEnvironment  {
         return Array(i).fill().map(() => Array(j).fill(0));
     }
 
-    getNavigationMesh(){
-        let mesh = this._makeZeroMatrix(this.width,this.height);
+    getNavigationMesh(asArray=false){
+        let mesh = this._makeZeroMatrix(this.height,this.width);
         let positions = this.getOccupiedPositions();
         positions.forEach(pos => {
             let [x,y] = pos;
-            mesh[x][y] = 1
+            mesh[y][x] = 1
         })
-        return mesh;
+
+        if (!asArray){
+            mesh = new PF.Grid(mesh);
+        }
+        
+        return mesh
+    }
+
+    makePathfinder(){
+        // TODO Provides different options for pathfinding
+        let finder = new PF.AStarFinder({
+            heuristic: PF.Heuristic.chebyshev,
+        })
+        return finder
+    }
+
+
+    findPath(source,target){
+        // TODO move finder in constructor to avoid init every time
+        let finder = this.makePathfinder()
+
+        let [xs,ys] = source instanceof Array ? source : source.pos;
+        let [xt,yt] = target instanceof Array ? target : target.pos;
+
+        let mesh = this.getNavigationMesh(false);
+        let path = finder.findPath(xs,ys,xt,yt,mesh.clone())
+        return path;
     }
 
 

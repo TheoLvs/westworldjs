@@ -24,7 +24,7 @@ export class BaseAgent extends BaseObject{
         // See Python version for implementation
 
         // Store old position
-        let [oldx,oldy] = [this.x,this.y]
+        let [oldx,oldy] = this.pos
 
         // New movements
         // TODO round x,y
@@ -44,7 +44,7 @@ export class BaseAgent extends BaseObject{
     }
 
     randomWalk(){
-        let [dx,dy] = utils.randomChoice(utils.MOVES);
+        let [dx,dy] = utils.randomChoice(utils.MOVES)
         this.move(dx,dy)
     }
 
@@ -57,18 +57,26 @@ export class BaseAgent extends BaseObject{
     moveAt(x,y){
         let dx = x - this.x
         let dy = y - this.y
-        this.move(dx,dy);
+        this.move(dx,dy)
     }
 
-    followMouse(naive=true){
-        let [x,y] = this.env.getMousePosition();
-        this.moveTowards(x,y,naive);
+    followMouse(naive=false){
+        let pos = this.env.getMousePosition()
+        this.moveTowards(pos,naive)
     }
 
-    moveTowards(x,y,naive=true){
+    moveTowards(target,naive=true){
 
-        // TODO add in naive pathfinding
-        if (naive){
+        let [x,y] = target instanceof Array ? target : target.pos
+
+        if (!naive){
+            let path = this.env.findPath(this,target)
+            if (path.length > 1){
+                let [xn,yn] = path[1]
+                this.moveAt(xn,yn)
+            }
+
+        } else {
             let moves = [];
             if (this.x > x){
                 moves.push([-1,0])

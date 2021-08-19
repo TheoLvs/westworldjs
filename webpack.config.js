@@ -1,9 +1,25 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
   entry: './src/index.js',
+  mode:'development',
   target: 'web',
+  devtool: 'inline-source-map',
+  // devServer:{
+  //   static: {
+  //     directory: path.join(__dirname, 'dist'),
+  //   },
+  // },
+  // devServer: {contentBase: './dist'},
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Dev',
+      tempate: './dist/index2.html',
+      inject: "body",
+    }),
+  ],
   output: {
     library:{
         name:"westworld",
